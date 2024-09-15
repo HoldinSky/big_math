@@ -303,9 +303,3 @@ func (bn *BigNumber) Mod(divisor *BigNumber) BigNumber {
 	_, remainder := bn.DivWithRem(divisor)
 	return remainder
 }
-
-func parseInt64(str string) int64 {
-	num, _ := strconv.Atoi(str)
-
-	return int64(num)
-}

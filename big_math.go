@@ -8,14 +8,15 @@ import (
 	bn "github.com/HoldinSky/big_math/internal/big_number"
 )
 
-const usageStr = "USAGE: big_math.exe OPERATION [OPERAND1 OPERAND2|--random OPERAND1_LENGTH OPERAND2_LENGTH]\n\n" +
-	"OPERATION:\n-a   addition\n-s   subtraction\n-m   multiplication\n-d   division\n-mod modulus\n\n" +
+const usageStr = "USAGE: big_math.exe OPERATION [OPERAND1[ OPERAND2]|--random OPERAND1_LENGTH OPERAND2_LENGTH]\n\n" +
+	"OPERATION:\n-a   addition\n-s   subtraction\n-m   multiplication\n-sq  square\n-d   division\n-mod modulus\n\n" +
 	"Specify operands in sequence or use \"--random\" flag followed by the lengths of both operands to be created randomly"
 
 const (
 	addition       string = "-a"
 	subtraction    string = "-s"
 	multiplication string = "-m"
+	square         string = "-sq"
 	division       string = "-d"
 	modulus        string = "-mod"
 )
@@ -24,6 +25,7 @@ var operationsMap map[string]string = map[string]string{
 	addition:       "+",
 	subtraction:    "-",
 	multiplication: "*",
+	square:         "^2",
 	division:       "/",
 	modulus:        "%",
 }
@@ -41,7 +43,7 @@ func printUsageAndExit() {
 func main() {
 	args := os.Args
 
-	if len(args) < 4 {
+	if len(args) < 3 {
 		printUsageAndExit()
 	}
 
@@ -74,9 +76,11 @@ func main() {
 			printInfoAndUsageAndExit("Failed to parse OPERAND1")
 		}
 
-		operand2, err = bn.NewBigNumber(args[3])
-		if err != nil {
-			printInfoAndUsageAndExit("Failed to parse OPERAND2")
+		if args[1] != square {
+			operand2, err = bn.NewBigNumber(args[3])
+			if err != nil {
+				printInfoAndUsageAndExit("Failed to parse OPERAND2")
+			}
 		}
 	}
 
@@ -87,11 +91,17 @@ func main() {
 		result = operand1.Subtract(&operand2)
 	case multiplication:
 		result = operand1.Mul(&operand2)
+	case square:
+		result = operand1.Squared()
 	case division:
 		result = operand1.Div(&operand2)
 	case modulus:
 		result = operand1.Mod(&operand2)
 	}
 
-	fmt.Printf("%s\n %s\n%s\n =\n%s", operand1.String(), opStr, operand2.String(), result.String())
+	if args[1] == square {
+		fmt.Printf("%s %s\n =\n%s", operand1.String(), opStr, result.String())
+	} else {
+		fmt.Printf("%s\n %s\n%s\n =\n%s", operand1.String(), opStr, operand2.String(), result.String())
+	}
 }

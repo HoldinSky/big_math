@@ -46,34 +46,6 @@ func new(repr string) BigNumber {
 	return num
 }
 
-func fromInt(val int) BigNumber {
-	num, _ := NewBigNumber(strconv.Itoa(val))
-
-	return num
-}
-
-func fromArray(values []int64, sign sign_t) BigNumber {
-	num := defaultBn()
-
-	leadingZeros := false
-	var zerosCount int64 = 0
-	for _, val := range values {
-		leadingZeros = val == 0
-		if leadingZeros {
-			zerosCount++
-			continue
-		}
-
-		num.appendEmptySegments(&zerosCount)
-		num.appendSegment(val)
-
-		zerosCount = 0
-	}
-	num.sign = sign
-
-	return num
-}
-
 func RandomBigNumber(length int) BigNumber {
 	var digit int
 	numberStr := strings.Builder{}
