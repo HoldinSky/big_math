@@ -43,8 +43,13 @@ func printUsageAndExit() {
 func main() {
 	args := os.Args
 
-	if len(args) < 3 {
+	if len(args) < 2 {
 		printUsageAndExit()
+	}
+
+	if args[1] == "--help" {
+		fmt.Println(usageStr)
+		os.Exit(0)
 	}
 
 	opStr, exists := operationsMap[args[1]]
